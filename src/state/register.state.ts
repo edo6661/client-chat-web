@@ -4,6 +4,13 @@ export interface RegisterState {
   password: string;
   confirmPassword: string;
 }
+
+export interface RegisterInput {
+  name: keyof RegisterState;
+  label: string;
+  type: string;
+  placeholder: string;
+}
 export const initialRegisterState: RegisterState = {
   fullname: "",
   email: "",
@@ -11,7 +18,7 @@ export const initialRegisterState: RegisterState = {
   confirmPassword: "",
 };
 
-export const registerInputs = [
+export const registerInputs: RegisterInput[] = [
   {
     name: "fullname",
     label: "Full Name",

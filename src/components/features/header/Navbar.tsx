@@ -8,7 +8,6 @@ const Navbar = (
     logout: () => Promise<void>
   }
 ) => {
-  console.log("Navbar -> user", user)
   return (
     <header className='container bg-red-500 justify-between flex gap-4'>
       <Link to='/'>Home</Link>

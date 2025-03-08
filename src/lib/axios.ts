@@ -1,4 +1,3 @@
-// apiClient.ts
 import {
   ApiErrorResponse,
   APIPaginatedResponse,
@@ -73,7 +72,6 @@ class ApiClient {
         data,
         config
       );
-      console.log("RESPONSE POST:", response.data);
       return response.data as T;
     } catch (error) {
       return this.handleError(error as AxiosError<ApiErrorResponse>);

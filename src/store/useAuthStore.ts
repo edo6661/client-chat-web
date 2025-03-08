@@ -1,11 +1,10 @@
 import { apiClient } from "@/lib/axios";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/types/response.type";
 import { User } from "@/types/user.type";
-import axios from "axios";
 import { create } from "zustand";
-import { toast } from "sonner";
 import { RegisterState } from "@/state/register.state";
 import { handleError } from "@/utils/handle-error";
+import { LoginState } from "@/state/login.state";
 
 export interface AuthStore {
   authUser: User | null;
@@ -14,9 +13,12 @@ export interface AuthStore {
   isUpdatingProfile: boolean;
   error: ApiErrorResponse | null;
   checkAuth: () => Promise<void>;
+  clearMessage: () => void;
   clearError: () => void;
   register: (data: RegisterState) => Promise<void>;
+  login: (data: LoginState) => Promise<void>;
   logout: () => Promise<void>;
+  updateProfile: ({ profilePic }: { profilePic: string }) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -28,33 +30,39 @@ export const useAuthStore = create<AuthStore>((set) => ({
   isUpdatingProfile: false,
   error: null,
   clearError: () => set({ error: null }),
+  clearMessage: () => set({ message: null }),
 
   checkAuth: async () => {
     const controller = new AbortController();
 
     try {
-      const res = await apiClient.get<ApiSuccessResponse<User>>("/users/self");
-      set({ authUser: res.data, message: res.message });
+      const res = await apiClient.get<
+        ApiSuccessResponse<{
+          user: User;
+        }>
+      >("/users/self");
+      set({ authUser: res.data.user, message: res.message, error: null });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      let errorMessage = "Failed to authenticate";
-
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data.message || error.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      toast.error("Authentication Error", {
-        description: errorMessage,
-        action: {
-          label: "Dismiss",
-          onClick: () => {
-            toast.dismiss();
-            set({ error: null });
-          },
-        },
-      });
+      set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
+    }
+    return controller.abort();
+  },
+  login: async (data) => {
+    const controller = new AbortController();
+    try {
+      const res = await apiClient.post<
+        ApiSuccessResponse<{
+          user: User;
+        }>
+      >("/auth/login", data);
+      set({ authUser: res.data.user, message: res.message, error: null });
+    } catch (e) {
+      console.log("ERROR:", e);
+
+      set({ error: handleError(e) });
     }
     return controller.abort();
   },
@@ -66,7 +74,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         data
       );
 
-      set({ authUser: res.data, message: res.message });
+      set({ authUser: res.data, message: res.message, error: null });
     } catch (e) {
       set({ error: handleError(e) });
     }
@@ -76,10 +84,25 @@ export const useAuthStore = create<AuthStore>((set) => ({
     const controller = new AbortController();
     try {
       await apiClient.post("/auth/logout");
-      set({ authUser: null, message: "Logged out successfully" });
+      set({ authUser: null, message: "Logged out successfully", error: null });
     } catch (e) {
       set({ error: handleError(e) });
     }
     return controller.abort();
+  },
+  updateProfile: async ({ profilePic }) => {
+    try {
+      const res = await apiClient.put<ApiSuccessResponse<User>>(
+        "/users/profile",
+        {
+          profilePic,
+        }
+      );
+      console.log(res);
+      set({ authUser: res.data, message: res.message, error: null });
+    } catch (e) {
+      set({ error: handleError(e) });
+      console.error(e);
+    }
   },
 }));
