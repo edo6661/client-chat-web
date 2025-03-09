@@ -1,8 +1,58 @@
-import React from 'react'
+import Aside from '@/components/features/home/Aside';
+import ChatBox from '@/components/features/home/ChatBox';
+import SelectUserToChat from '@/components/features/home/SelectUserToChat';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useChatStore } from '@/store/useChatStore'
+import React, { useEffect } from 'react'
 
 const HomePage = () => {
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading, isMessagesLoading, getMessages, messages } = useChatStore();
+  const { onlineUsers } = useAuthStore()
+  useEffect(() => {
+    getUsers();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (selectedUser) {
+      getMessages(selectedUser._id!)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedUser?._id])
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setSelectedUser(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [setSelectedUser]);
+
+
   return (
-    <div>HomePage</div>
+    <main className='pt-4'>
+      <div>
+        <section className='pr-4 flex h-[90vh]'>
+          <div className='space-y-4 overflow-y-auto min-w-48 '>
+            {!isUsersLoading && users.length === 0 && <p>No users found</p>}
+            {!isUsersLoading && users.length > 0 && users.map((user) =>
+              <SelectUserToChat
+                user={user}
+                selectedUser={selectedUser}
+                setSelectedUser={setSelectedUser}
+                key={user._id}
+              />
+            )}
+
+          </div>
+          <ChatBox />
+        </section>
+      </div>
+    </main>
   )
 }
 

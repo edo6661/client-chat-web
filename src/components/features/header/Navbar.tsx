@@ -9,7 +9,7 @@ const Navbar = (
   }
 ) => {
   return (
-    <header className='container bg-red-500 justify-between flex gap-4'>
+    <header className='container bg-red-500 justify-between flex gap-4 py-2'>
       <Link to='/'>Home</Link>
       {!user && (
         <>

@@ -38,12 +38,12 @@ const App = () => {
 
       />
       <Routes>
-        <Route index element={<HomePage />} />
         <Route element={<GuestRoute />}>
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/login' element={<LoginPage />} />
         </Route>
         <Route element={<ProtectedRoute />}>
+          <Route index element={<HomePage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>

@@ -19,6 +19,7 @@ export interface AuthStore {
   login: (data: LoginState) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: ({ profilePic }: { profilePic: string }) => Promise<void>;
+  onlineUsers: User[];
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -29,6 +30,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   isLoggingIn: false,
   isUpdatingProfile: false,
   error: null,
+  onlineUsers: [],
   clearError: () => set({ error: null }),
   clearMessage: () => set({ message: null }),
 
