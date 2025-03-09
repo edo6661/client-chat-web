@@ -1,9 +1,11 @@
 import { apiClient } from "@/lib/axios";
+import { ChatState } from "@/state/chat.state";
 import { Message } from "@/types/message.type";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/types/response.type";
 import { User } from "@/types/user.type";
 import { handleError } from "@/utils/handle-error";
 import { create } from "zustand";
+import { useAuthStore } from "./useAuthStore";
 
 export interface ChatStore {
   messages: Message[];
@@ -15,16 +17,35 @@ export interface ChatStore {
   setSelectedUser: (user: User | null) => void;
   getUsers: () => Promise<void>;
   getMessages: (receiverId: string) => Promise<void>;
-  sendMessage: (data) => Promise<void>;
+  sendMessage: (data: ChatState) => Promise<void>;
+  subscribeToMessages: () => void;
+  unsubscribeFromMessages: () => void;
 }
 
-export const useChatStore = create<ChatStore>((set) => ({
+export const useChatStore = create<ChatStore>((set, get) => ({
+  subscribeToMessages: () => {
+    const { selectedUser } = get();
+    if (!selectedUser) return;
+    const socket = useAuthStore.getState().socket;
+    if (!socket) return;
+    socket.on("newMessage", (newMessage: Message) => {
+      const isMessageFromSelectedUser =
+        newMessage.senderId === selectedUser._id;
+      if (isMessageFromSelectedUser) return;
+      console.log("NEW MESSAGE: ", newMessage);
+      set({ messages: [...get().messages, newMessage] });
+    });
+  },
+  unsubscribeFromMessages: () => {
+    const socket = useAuthStore.getState().socket;
+    if (!socket) return;
+    socket.off("newMessage");
+  },
   messages: [],
   users: [],
   selectedUser: null,
   isUsersLoading: false,
   isMessagesLoading: false,
-  // ! optimize later
   setSelectedUser: (user) => set({ selectedUser: user }),
   error: null,
   getUsers: async () => {
@@ -59,14 +80,14 @@ export const useChatStore = create<ChatStore>((set) => ({
     }
   },
   sendMessage: async (data) => {
-    const { messages, selectedUser } = useChatStore.getState();
+    const { messages, selectedUser } = get();
     try {
       const res = await apiClient.post<
         ApiSuccessResponse<{
-          messages: Message[];
+          message: Message;
         }>
       >(`/messages/send/${selectedUser?._id}`, data);
-      set({ messages: [...messages, ...res.data.messages], error: null });
+      set({ messages: [...messages, res.data.message], error: null });
     } catch (error) {
       set({ error: handleError(error) });
     }

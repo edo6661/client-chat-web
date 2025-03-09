@@ -4,9 +4,10 @@ interface SelectUserToChatProps {
   user: User;
   selectedUser: User | null;
   setSelectedUser: (user: User) => void;
+  onlineUsers: string[];
 }
 const SelectUserToChat = (
-  { user, selectedUser, setSelectedUser }: SelectUserToChatProps
+  { user, selectedUser, setSelectedUser, onlineUsers }: SelectUserToChatProps
 ) => {
   return (
     <div
@@ -22,7 +23,9 @@ const SelectUserToChat = (
         />
         <div className='max-w-28'>
           <h3 className='truncate'>{user.fullname}</h3>
-          <span>Online</span>
+          <span>
+            {onlineUsers.includes(user._id!) ? 'online' : 'offline'}
+          </span>
         </div>
       </div>
 

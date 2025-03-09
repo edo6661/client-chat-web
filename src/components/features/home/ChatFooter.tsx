@@ -1,9 +1,9 @@
-import { initialChatState } from '@/state/chat.state'
-import React, { useRef, useState, useTransition } from 'react'
+import { ChatState, initialChatState } from '@/state/chat.state'
+import React, { useEffect, useRef, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 const ChatFooter = (
-  { sendMessage }: { sendMessage: (data) => void }
+  { sendMessage }: { sendMessage: (data: ChatState) => void }
 ) => {
   const [formState, setFormState] = useState(initialChatState);
   const [isPending, startTransition] = useTransition()
@@ -33,6 +33,19 @@ const ChatFooter = (
       setFormState(initialChatState)
     })
   }
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault()
+        handleSendMessage()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+
+  },)
+
   return (
     <div className='flex items-center gap-4'>
       <input
@@ -41,6 +54,7 @@ const ChatFooter = (
         className='w-full border-none bg-transparent focus:outline-none'
         value={formState.text}
         onChange={(e) => setFormState({ ...formState, text: e.target.value })}
+        disabled={isPending}
       />
       <input
         type="file"
@@ -48,6 +62,7 @@ const ChatFooter = (
         accept="image/*"
         className='hidden'
         onChange={handleImageChange}
+        disabled={isPending}
       />
       {formState.image && (
         <div className='relative'>
@@ -73,6 +88,7 @@ const ChatFooter = (
       <button
         onClick={() => fileInputRef.current?.click()}
         className='p-2 bg-neutral-100/50 rounded-full'
+
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

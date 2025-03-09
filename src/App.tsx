@@ -14,7 +14,7 @@ import GuestRoute from './components/ui/shared/GuestRoute'
 
 
 const App = () => {
-  const { checkAuth, isCheckingAuth, authUser, logout } = useAuthStore();
+  const { checkAuth, isCheckingAuth, authUser, logout, onlineUsers } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -24,6 +24,8 @@ const App = () => {
   if (isCheckingAuth) {
     return <div>loading...</div>
   }
+  // TODO: Remove this console.log
+  // console.log({ onlineUsers });
 
 
 

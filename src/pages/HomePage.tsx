@@ -1,23 +1,24 @@
-import Aside from '@/components/features/home/Aside';
+/* eslint-disable react-hooks/exhaustive-deps */
 import ChatBox from '@/components/features/home/ChatBox';
 import SelectUserToChat from '@/components/features/home/SelectUserToChat';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useChatStore } from '@/store/useChatStore'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 const HomePage = () => {
-  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading, isMessagesLoading, getMessages, messages } = useChatStore();
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading, getMessages, subscribeToMessages, unsubscribeFromMessages } = useChatStore();
   const { onlineUsers } = useAuthStore()
   useEffect(() => {
     getUsers();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     if (selectedUser) {
       getMessages(selectedUser._id!)
+      subscribeToMessages()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => unsubscribeFromMessages()
+
   }, [selectedUser?._id])
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -27,10 +28,10 @@ const HomePage = () => {
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
+
   }, [setSelectedUser]);
+
 
 
   return (
@@ -41,6 +42,7 @@ const HomePage = () => {
             {!isUsersLoading && users.length === 0 && <p>No users found</p>}
             {!isUsersLoading && users.length > 0 && users.map((user) =>
               <SelectUserToChat
+                onlineUsers={onlineUsers}
                 user={user}
                 selectedUser={selectedUser}
                 setSelectedUser={setSelectedUser}

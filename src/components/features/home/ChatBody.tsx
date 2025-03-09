@@ -8,7 +8,6 @@ import { Avatar } from '@/components/ui/avatar'
 const ChatBody = (
   { messages, selectedUser, authUser }: { messages: Message[], selectedUser: User | null, authUser: User | null }
 ) => {
-
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -22,11 +21,11 @@ const ChatBody = (
       return 'Just now'
     }
   }
+
   if (!selectedUser || !authUser) return null
 
-
   return (
-    <div className="flex-1 overflow-y-auto py-4 px-1 space-y-4">
+    <div className="flex-1 overflow-y-auto py-4 px-3 space-y-4">
       {messages.length === 0 ? (
         <div className="flex h-full items-center justify-center">
           <p className="text-neutral-500">Start a conversation with {selectedUser.fullname || 'this user'}</p>
@@ -34,19 +33,17 @@ const ChatBody = (
       ) : (
         messages.map((message, index) => {
           const isAuthUserMessage = message.senderId === authUser._id
-          const showAvatar =
-            index === 0 ||
-            messages[index - 1]?.senderId !== message.senderId
+          const user = isAuthUserMessage ? authUser : selectedUser
 
           return (
             <div
               key={message._id}
               className={cn(
-                "flex gap-2 items-start",
+                "flex gap-3 items-start",
                 isAuthUserMessage ? "justify-end" : "justify-start"
               )}
             >
-              {!isAuthUserMessage && showAvatar && (
+              {!isAuthUserMessage && (
                 <div className="flex-shrink-0">
                   <Avatar className="h-8 w-8">
                     {selectedUser.profilePic ? (
@@ -64,11 +61,17 @@ const ChatBody = (
                 "max-w-md space-y-1",
                 isAuthUserMessage ? "items-end" : "items-start"
               )}>
+                {index === 0 || messages[index - 1]?.senderId !== message.senderId ? (
+                  <div className="text-xs font-medium text-neutral-600 mb-1 px-1">
+                    {user.fullname || (isAuthUserMessage ? 'You' : 'User')}
+                  </div>
+                ) : null}
+
                 <div className={cn(
-                  "px-4 py-2 rounded-2xl",
+                  "px-4 py-2 rounded-lg shadow-sm",
                   isAuthUserMessage
-                    ? "bg-blue-600 text-white rounded-tr-none"
-                    : "bg-neutral-200 text-neutral-900 rounded-tl-none"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white border border-neutral-200 text-neutral-900"
                 )}>
                   {message.text}
                   {message.image && (
@@ -89,7 +92,7 @@ const ChatBody = (
                 </div>
               </div>
 
-              {isAuthUserMessage && showAvatar && (
+              {isAuthUserMessage && (
                 <div className="flex-shrink-0">
                   <Avatar className="h-8 w-8">
                     {authUser.profilePic ? (

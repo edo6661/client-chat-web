@@ -4,8 +4,8 @@ import {
   ApiSuccessResponse,
 } from "@/types/response.type";
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
-
-const BASE_URL = "http://localhost:5000/api/v1";
+export const BASE_API_URL = "http://localhost:5000";
+export const BASE_URL = `${BASE_API_URL}/api/v1`;
 
 class ApiClient {
   private instance: AxiosInstance;

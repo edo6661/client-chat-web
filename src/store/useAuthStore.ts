@@ -1,11 +1,11 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient, BASE_API_URL } from "@/lib/axios";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/types/response.type";
 import { User } from "@/types/user.type";
 import { create } from "zustand";
 import { RegisterState } from "@/state/register.state";
 import { handleError } from "@/utils/handle-error";
 import { LoginState } from "@/state/login.state";
-
+import { io, Socket } from "socket.io-client";
 export interface AuthStore {
   authUser: User | null;
   isCheckingAuth: boolean;
@@ -19,13 +19,17 @@ export interface AuthStore {
   login: (data: LoginState) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: ({ profilePic }: { profilePic: string }) => Promise<void>;
-  onlineUsers: User[];
+  onlineUsers: string[];
+  socket: Socket | null;
+  connectSocket: () => void;
+  disconnectSocket: () => void;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
+export const useAuthStore = create<AuthStore>((set, get) => ({
   authUser: null,
   isCheckingAuth: true,
   message: null,
+  socket: null,
   isSigningUp: false,
   isLoggingIn: false,
   isUpdatingProfile: false,
@@ -33,7 +37,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
   onlineUsers: [],
   clearError: () => set({ error: null }),
   clearMessage: () => set({ message: null }),
-
   checkAuth: async () => {
     const controller = new AbortController();
 
@@ -44,8 +47,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
         }>
       >("/users/self");
       set({ authUser: res.data.user, message: res.message, error: null });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+      get().connectSocket();
+    } catch {
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -61,6 +64,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         }>
       >("/auth/login", data);
       set({ authUser: res.data.user, message: res.message, error: null });
+      get().connectSocket();
     } catch (e) {
       console.log("ERROR:", e);
 
@@ -77,6 +81,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       );
 
       set({ authUser: res.data, message: res.message, error: null });
+      get().connectSocket();
     } catch (e) {
       set({ error: handleError(e) });
     }
@@ -87,6 +92,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       await apiClient.post("/auth/logout");
       set({ authUser: null, message: "Logged out successfully", error: null });
+      get().disconnectSocket();
     } catch (e) {
       set({ error: handleError(e) });
     }
@@ -106,5 +112,29 @@ export const useAuthStore = create<AuthStore>((set) => ({
       set({ error: handleError(e) });
       console.error(e);
     }
+  },
+  connectSocket: () => {
+    const { authUser } = get();
+    if (!authUser || get().socket?.connected) return;
+    const socket = io(BASE_API_URL, {
+      // ! user id ke: socket.handshake.query.userId
+      query: {
+        userId: authUser._id,
+      },
+    });
+    socket.connect();
+    set({ socket });
+    // ! listen ke event getOnlineUsers yang sudah di buat backend
+    socket.on("getOnlineUsers", (userIds) => {
+      if (!userIds) return;
+      if (userIds.length === 0) return;
+      if (userIds.length < 1) return;
+      set({ onlineUsers: userIds });
+    });
+  },
+  disconnectSocket: () => {
+    if (!get().socket) return;
+    get().socket?.disconnect();
+    set({ socket: null });
   },
 }));
