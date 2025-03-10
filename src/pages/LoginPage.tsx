@@ -1,16 +1,13 @@
 import LoginForm from '@/components/features/auth/LoginForm';
-import { Button } from '@/components/ui/button';
-import ErrorResponseHandler from '@/components/ui/shared/ErrorResponseHandler';
-import { initialLoginState, loginInputs, LoginState } from '@/state/login.state';
+import { initialLoginState, LoginState } from '@/state/login.state';
 import { useAuthStore } from '@/store/useAuthStore';
-import React, { useState, useTransition } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useTransition } from 'react'
+import { toast } from 'sonner';
 
 
 const LoginPage = () => {
-  const navigate = useNavigate();
 
-  const { login, error } = useAuthStore();
+  const { login, error, clearErrorMessage } = useAuthStore();
   const [isPending, startTransition] = useTransition();
   const [formState, setFormState] = useState<LoginState>(initialLoginState);
   const [showPassword, setShowPassword] = useState<Record<string, boolean>>({
@@ -20,6 +17,7 @@ const LoginPage = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleShowPassword = (name: string) => {
     setShowPassword({ ...showPassword, [name]: !showPassword[name] });
   }
@@ -31,28 +29,28 @@ const LoginPage = () => {
     })
   };
 
-
-
+  useEffect(() => {
+    if (!error?.message) return
+    toast.error(error.message)
+    return () => {
+      clearErrorMessage()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error?.message])
 
   return (
-    <form className='max-w-xl mx-auto'
+    <form className='container mt-8'
       onSubmit={handleSubmit}
     >
       <LoginForm
         formState={formState}
         showPassword={showPassword}
         handleChange={handleChange}
-        handleShowPassword={handleShowPassword}
-      />
-      <ErrorResponseHandler
+        isPending={isPending}
         error={error}
       />
-      <Button
-        type="submit"
-        disabled={isPending}
-      >
-        Submit
-      </Button>
+
+
     </form >
   )
 }

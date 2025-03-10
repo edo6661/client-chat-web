@@ -32,7 +32,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const isMessageFromSelectedUser =
         newMessage.senderId === selectedUser._id;
       if (isMessageFromSelectedUser) return;
-      console.log("NEW MESSAGE: ", newMessage);
       set({ messages: [...get().messages, newMessage] });
     });
   },
@@ -71,7 +70,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           messages: Message[];
         }>
       >(`/messages/${receiverId}`);
-      console.log("RES: ", res);
       set({ messages: res.data.messages, error: null });
     } catch (error) {
       set({ error: handleError(error) });

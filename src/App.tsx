@@ -1,3 +1,4 @@
+import './font.css'
 import { useEffect } from 'react'
 import Navbar from './components/features/header/Navbar'
 import { Route, Routes } from 'react-router-dom'
@@ -14,7 +15,7 @@ import GuestRoute from './components/ui/shared/GuestRoute'
 
 
 const App = () => {
-  const { checkAuth, isCheckingAuth, authUser, logout, onlineUsers } = useAuthStore();
+  const { checkAuth, isCheckingAuth, authUser, logout } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -24,20 +25,25 @@ const App = () => {
   if (isCheckingAuth) {
     return <div>loading...</div>
   }
-  // TODO: Remove this console.log
-  // console.log({ onlineUsers });
 
 
 
   return (
     <>
+      <Toaster
+        position='bottom-right'
+        theme='system'
+        swipeDirections={['left', 'right']}
+        dir='ltr'
+        toastOptions={{
+          closeButton: true,
+          duration: 3000,
+        }}
 
-
-      <Toaster />
+      />
       <Navbar
         user={authUser}
         logout={logout}
-
       />
       <Routes>
         <Route element={<GuestRoute />}>

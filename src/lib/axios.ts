@@ -4,6 +4,8 @@ import {
   ApiSuccessResponse,
 } from "@/types/response.type";
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
+export const DELOYED_BASE_API_URL =
+  "https://cold-augustina-edawg666-0300851b.koyeb.app";
 export const BASE_API_URL = "http://localhost:5000";
 export const BASE_URL = `${BASE_API_URL}/api/v1`;
 

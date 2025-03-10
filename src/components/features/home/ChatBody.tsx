@@ -9,8 +9,11 @@ const ChatBody = (
   { messages, selectedUser, authUser }: { messages: Message[], selectedUser: User | null, authUser: User | null }
 ) => {
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const isMessageEmpty = messages.length === 0
 
   useEffect(() => {
+    if (messages.length === 0) return
+    if (!messagesEndRef.current) return
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages.length])
 
@@ -24,8 +27,9 @@ const ChatBody = (
 
   if (!selectedUser || !authUser) return null
 
+
   return (
-    <div className="flex-1 overflow-y-auto py-4 px-3 space-y-4">
+    <div className={`flex-1 py-4 px-3 space-y-4 ${isMessageEmpty ? '' : 'overflow-y-auto'}`}>
       {messages.length === 0 ? (
         <div className="flex h-full items-center justify-center">
           <p className="text-neutral-500">Start a conversation with {selectedUser.fullname || 'this user'}</p>

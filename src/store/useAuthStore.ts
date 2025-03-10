@@ -15,6 +15,7 @@ export interface AuthStore {
   checkAuth: () => Promise<void>;
   clearMessage: () => void;
   clearError: () => void;
+  clearErrorMessage: () => void;
   register: (data: RegisterState) => Promise<void>;
   login: (data: LoginState) => Promise<void>;
   logout: () => Promise<void>;
@@ -36,6 +37,14 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   error: null,
   onlineUsers: [],
   clearError: () => set({ error: null }),
+  clearErrorMessage: () => {
+    set({
+      error: {
+        ...get().error,
+        message: "",
+      },
+    });
+  },
   clearMessage: () => set({ message: null }),
   checkAuth: async () => {
     const controller = new AbortController();
@@ -106,7 +115,6 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           profilePic,
         }
       );
-      console.log(res);
       set({ authUser: res.data, message: res.message, error: null });
     } catch (e) {
       set({ error: handleError(e) });

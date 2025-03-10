@@ -13,10 +13,9 @@ const HomePage = () => {
 
   }, []);
   useEffect(() => {
-    if (selectedUser) {
-      getMessages(selectedUser._id!)
-      subscribeToMessages()
-    }
+    if (!selectedUser) return;
+    getMessages(selectedUser._id!)
+    subscribeToMessages()
     return () => unsubscribeFromMessages()
 
   }, [selectedUser?._id])

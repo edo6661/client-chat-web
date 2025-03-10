@@ -9,29 +9,31 @@ const Navbar = (
   }
 ) => {
   return (
-    <header className='container bg-red-500 justify-between flex gap-4 py-2'>
-      <Link to='/'>Home</Link>
-      {!user && (
-        <>
-          <Link to='/register'>Register</Link>
-          <Link to='/login'>Login</Link></>
-      )}
-      {user && (
-        <>
-          <Link to='/settings'>Settings</Link>
-          <Link to='/profile'>Profile</Link>
-          <button
-            onClick={
-              async () => {
-                await logout()
+    <header className='bg-primary text-primary-foreground rounded-b-sm'>
+      <div className=' justify-around flex gap-4 py-2 container'>
+        {!user && (
+          <>
+            <Link to='/register'>Register</Link>
+            <Link to='/login'>Login</Link></>
+        )}
+        {user && (
+          <>
+            <Link to='/'>Home</Link>
+            <Link to='/settings'>Settings</Link>
+            <Link to='/profile'>Profile</Link>
+            <button
+              onClick={
+                async () => {
+                  await logout()
+                }
               }
-            }
-          >
-            logout
-          </button>
-        </>
-      )}
+            >
+              logout
+            </button>
+          </>
+        )}
 
+      </div>
     </header>
   )
 }

@@ -1,14 +1,13 @@
 import RegisterForm from '@/components/features/auth/RegisterForm';
-import { Button } from '@/components/ui/button';
-import ErrorResponseHandler from '@/components/ui/shared/ErrorResponseHandler';
 import { initialRegisterState, RegisterState } from '@/state/register.state';
 import { useAuthStore } from '@/store/useAuthStore';
-import React, { useState, useTransition } from 'react'
+import React, { useEffect, useState, useTransition } from 'react'
+import { toast } from 'sonner';
 
 
 const RegisterPage = () => {
 
-  const { register, error } = useAuthStore();
+  const { register, error, clearErrorMessage, clearError } = useAuthStore();
   const [isPending, startTransition] = useTransition();
   const [formState, setFormState] = useState<RegisterState>(initialRegisterState);
   const [showPassword, setShowPassword] = useState<Record<string, boolean>>({
@@ -18,6 +17,7 @@ const RegisterPage = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleShowPassword = (name: string) => {
     setShowPassword({ ...showPassword, [name]: !showPassword[name] });
   }
@@ -29,28 +29,32 @@ const RegisterPage = () => {
   };
 
 
+  useEffect(() => {
+    if (!error?.message) return
+    toast.error(error.message)
+    return () => {
+      clearErrorMessage()
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error?.message])
+
+
 
 
 
   return (
-    <form className='max-w-xl mx-auto'
+    <form className='container mt-8'
       onSubmit={handleSubmit}
     >
       <RegisterForm
         formState={formState}
         showPassword={showPassword}
         handleChange={handleChange}
-        handleShowPassword={handleShowPassword}
-      />
-      <ErrorResponseHandler
         error={error}
+        isPending={isPending}
       />
-      <Button
-        type="submit"
-        disabled={isPending}
-      >
-        Submit
-      </Button>
+
     </form>
   )
 }

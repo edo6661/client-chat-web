@@ -27,7 +27,6 @@ const ChatFooter = (
   const handleSendMessage = () => {
     const { text, image: imagePreview } = formState
     if (!text.trim() && !imagePreview) return
-    console.log("SENDING MESSAGE:", text, imagePreview)
     startTransition(async () => {
       await sendMessage({ text, image: imagePreview })
       setFormState(initialChatState)
