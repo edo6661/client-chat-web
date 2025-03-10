@@ -1,4 +1,4 @@
-import { apiClient, BASE_API_URL } from "@/lib/axios";
+import { apiClient, DEPLOYED_BASE_API_URL } from "@/lib/axios";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/types/response.type";
 import { User } from "@/types/user.type";
 import { create } from "zustand";
@@ -124,7 +124,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   connectSocket: () => {
     const { authUser } = get();
     if (!authUser || get().socket?.connected) return;
-    const socket = io(BASE_API_URL, {
+    const socket = io(DEPLOYED_BASE_API_URL, {
       // ! user id ke: socket.handshake.query.userId
       query: {
         userId: authUser._id,
