@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label"
 import { ApiErrorResponse } from '@/types/response.type'
 import { motion, AnimatePresence } from "motion/react"
 import LinkNavigate from './LinkNavigate'
+import AuthFieldErrorMessage from './AuthFieldErrorMessage'
 
 interface LoginFormProps {
   formState: LoginState;
@@ -27,16 +28,8 @@ const LoginForm = (
 
 ) => {
 
-  const variants = {
-    visible: {
-      opacity: 1,
-      x: 0,
-    },
-    hidden: {
-      opacity: 0,
-      x: -20,
-    }
-  }
+  const errFieldsExist = error?.errors && error?.errors?.length > 0;
+
 
 
   const content = () => (
@@ -64,21 +57,10 @@ const LoginForm = (
                 onChange={handleChange}
               />
               <AnimatePresence>
-                {error?.errors && error?.errors?.length > 0 && error.errors.map((err) => (
+                {errFieldsExist && error.errors!.map((err) => (
                   err.field === input.name && (
-                    <motion.div
-                      initial="hidden"
-                      animate="visible"
-                      variants={variants}
-                      exit="hidden"
-                      transition={{
-                        duration: 0.3,
-                        delay: 0.1,
-                        ease: 'easeInOut'
-                      }}
-                      key={err.field} className="text-red-500 text-sm">
-                      {err.message}
-                    </motion.div>
+                    <AuthFieldErrorMessage errMsg={err.message} key={err.field} />
+
                   )
                 ))
                 }
@@ -86,6 +68,19 @@ const LoginForm = (
             </div>
           ))
           }
+          <AnimatePresence>
+            {errFieldsExist && error.errors!.map((err) => (
+              err.field === "body" && (
+                <AuthFieldErrorMessage errMsg={err.message} key={err.field} />
+              )
+            ))
+            }
+          </AnimatePresence>
+          <AnimatePresence>
+            {error?.message && (
+              <AuthFieldErrorMessage errMsg={error.message} />
+            )}
+          </AnimatePresence>
         </motion.div>
       </CardContent>
       <CardFooter className="flex flex-col gap-2 items-start">

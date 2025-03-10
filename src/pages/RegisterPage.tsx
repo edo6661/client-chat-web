@@ -7,20 +7,17 @@ import { toast } from 'sonner';
 
 const RegisterPage = () => {
 
-  const { register, error, clearErrorMessage, clearError } = useAuthStore();
+  const { register, error, clearErrorMessage } = useAuthStore();
   const [isPending, startTransition] = useTransition();
   const [formState, setFormState] = useState<RegisterState>(initialRegisterState);
-  const [showPassword, setShowPassword] = useState<Record<string, boolean>>({
+  const [showPassword] = useState<Record<string, boolean>>({
     password: false,
     confirmPassword: false,
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleShowPassword = (name: string) => {
-    setShowPassword({ ...showPassword, [name]: !showPassword[name] });
-  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     startTransition(async () => {
@@ -44,18 +41,22 @@ const RegisterPage = () => {
 
 
   return (
-    <form className='container mt-8'
-      onSubmit={handleSubmit}
-    >
-      <RegisterForm
-        formState={formState}
-        showPassword={showPassword}
-        handleChange={handleChange}
-        error={error}
-        isPending={isPending}
-      />
+    <>
+      <title>Register</title>
 
-    </form>
+      <form className='container mt-8'
+        onSubmit={handleSubmit}
+      >
+        <RegisterForm
+          formState={formState}
+          showPassword={showPassword}
+          handleChange={handleChange}
+          error={error}
+          isPending={isPending}
+        />
+
+      </form>
+    </>
   )
 }
 

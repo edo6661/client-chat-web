@@ -59,7 +59,7 @@ const RegisterForm = (
               <AnimatePresence>
                 {errFieldsExist && error.errors!.map((err) => (
                   err.field === input.name && (
-                    <AuthFieldErrorMessage err={err} key={err.field} />
+                    <AuthFieldErrorMessage errMsg={err.message} key={err.field} />
                   )
                 ))
                 }
@@ -70,10 +70,15 @@ const RegisterForm = (
           <AnimatePresence>
             {errFieldsExist && error.errors!.map((err) => (
               err.field === "body" && (
-                <AuthFieldErrorMessage err={err} key={err.field} />
+                <AuthFieldErrorMessage errMsg={err.message} key={err.field} />
               )
             ))
             }
+          </AnimatePresence>
+          <AnimatePresence>
+            {error?.message && (
+              <AuthFieldErrorMessage errMsg={error.message} />
+            )}
           </AnimatePresence>
         </motion.div>
       </CardContent>

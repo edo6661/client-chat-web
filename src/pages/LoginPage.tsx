@@ -10,17 +10,14 @@ const LoginPage = () => {
   const { login, error, clearErrorMessage } = useAuthStore();
   const [isPending, startTransition] = useTransition();
   const [formState, setFormState] = useState<LoginState>(initialLoginState);
-  const [showPassword, setShowPassword] = useState<Record<string, boolean>>({
+  const [showPassword] = useState<Record<string, boolean>>({
     password: false,
     confirmPassword: false,
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleShowPassword = (name: string) => {
-    setShowPassword({ ...showPassword, [name]: !showPassword[name] });
-  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     startTransition(async () => {
@@ -39,19 +36,22 @@ const LoginPage = () => {
   }, [error?.message])
 
   return (
-    <form className='container mt-8'
-      onSubmit={handleSubmit}
-    >
-      <LoginForm
-        formState={formState}
-        showPassword={showPassword}
-        handleChange={handleChange}
-        isPending={isPending}
-        error={error}
-      />
+    <>
+      <title>Login</title>
+      <form className='container mt-8'
+        onSubmit={handleSubmit}
+      >
+        <LoginForm
+          formState={formState}
+          showPassword={showPassword}
+          handleChange={handleChange}
+          isPending={isPending}
+          error={error}
+        />
 
 
-    </form >
+      </form >
+    </>
   )
 }
 

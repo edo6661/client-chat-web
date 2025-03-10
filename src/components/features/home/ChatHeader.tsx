@@ -1,16 +1,11 @@
-import { Button } from '@/components/ui/button'
 import { User } from '@/types/user.type'
-import React from 'react'
-import { X } from 'lucide-react';
 
 const ChatHeader = (
-  { setSelectedUser, selectedUser }: { setSelectedUser: (user: User | null) => void, selectedUser: User | null }
+  { selectedUser, isOnline }: { selectedUser: User | null, isOnline: boolean }
 ) => {
-  const emptyUser = () => {
-    setSelectedUser(null)
-  }
+
   return (
-    <div className='flex items-center justify-between gap-4'>
+    <div className='flex items-center justify-between gap-4 bg-primary-foreground pt-6 pb-4 pl-4 border border-l-muted'>
       <div className='flex gap-4 items-center'>
         <img
           src={selectedUser?.profilePic}
@@ -18,17 +13,11 @@ const ChatHeader = (
           className='w-12 h-12 rounded-full'
         />
         <div>
-          <p>{selectedUser?.fullname}</p>
-          <p>Offline</p>
+          <p className='text-lg font-medium'>{selectedUser?.fullname}</p>
+          {isOnline ? <span className='text-green-500'>Online</span> : <span className='text-red-500'>Offline</span>}
         </div>
       </div>
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={emptyUser}
-      >
-        <X />
-      </Button>
+
 
     </div>
   )

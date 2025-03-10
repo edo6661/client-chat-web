@@ -46,11 +46,11 @@ const ChatFooter = (
   },)
 
   return (
-    <div className='flex items-center gap-4'>
+    <div className='flex items-center gap-4 bg-primary-foreground py-4 border border-l-muted'>
       <input
         type="text"
         placeholder="Type a message"
-        className='w-full border-none bg-transparent focus:outline-none'
+        className='w-full border-none bg-transparent focus:outline-none pl-4'
         value={formState.text}
         onChange={(e) => setFormState({ ...formState, text: e.target.value })}
         disabled={isPending}
@@ -66,7 +66,7 @@ const ChatFooter = (
       {formState.image && (
         <div className='relative'>
           <img src={formState.image} alt="preview" className='w-12 h-12 rounded-lg' />
-          <button onClick={removeImage} className='absolute top-0 right-0 p-1 bg-neutral-100/50 rounded-full'>
+          <button onClick={removeImage} className='absolute top-0 right-0 p-1 bg-neutral-100/50 rounded-full cursor-pointer'>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -86,7 +86,7 @@ const ChatFooter = (
       )}
       <button
         onClick={() => fileInputRef.current?.click()}
-        className='p-2 bg-neutral-100/50 rounded-full'
+        className='p-2 bg-neutral-100/50 rounded-full cursor-pointer'
 
       >
         <svg
@@ -106,7 +106,7 @@ const ChatFooter = (
       </button>
       <button
         onClick={handleSendMessage}
-        className='p-2 bg-neutral-100/50 rounded-full'
+        className='p-2 bg-neutral-100/50 rounded-full cursor-pointer'
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

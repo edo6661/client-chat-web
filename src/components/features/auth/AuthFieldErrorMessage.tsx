@@ -1,10 +1,8 @@
-import React from 'react'
 import { motion } from 'motion/react'
-import { ApiErrorResponse } from '@/types/response.type'
 
 const AuthFieldErrorMessage = (
-  { err }: {
-    err: ApiErrorResponse
+  { errMsg }: {
+    errMsg: string
   }
 ) => {
   const variants = {
@@ -29,8 +27,8 @@ const AuthFieldErrorMessage = (
         delay: 0.1,
         ease: 'easeInOut'
       }}
-      key={err.field} className="text-red-500 text-sm">
-      {err.message}
+      className="text-red-500 text-sm">
+      {errMsg}
     </motion.div>)
 }
 

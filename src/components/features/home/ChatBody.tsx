@@ -1,6 +1,6 @@
 import { Message } from '@/types/message.type'
 import { User } from '@/types/user.type'
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { Avatar } from '@/components/ui/avatar'
@@ -29,7 +29,7 @@ const ChatBody = (
 
 
   return (
-    <div className={`flex-1 py-4 px-3 space-y-4 ${isMessageEmpty ? '' : 'overflow-y-auto'}`}>
+    <div className={`flex-1 py-4 px-3 space-y-4 ${isMessageEmpty ? '' : 'overflow-y-auto scrollbar-none'}`}>
       {messages.length === 0 ? (
         <div className="flex h-full items-center justify-center">
           <p className="text-neutral-500">Start a conversation with {selectedUser.fullname || 'this user'}</p>

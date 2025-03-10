@@ -1,21 +1,23 @@
 import './font.css'
 import { useEffect } from 'react'
-import Navbar from './components/features/header/Navbar'
 import { Route, Routes } from 'react-router-dom'
 import { useAuthStore } from './store/useAuthStore'
 import HomePage from './pages/HomePage'
 import RegisterPage from './pages/RegisterPage'
 import LoginPage from './pages/LoginPage'
-import SettingsPage from './pages/SettingsPage'
 import ProfilePage from './pages/ProfilePage'
 import { Toaster } from "@/components/ui/sonner"
 import ProtectedRoute from './components/ui/shared/ProtectedRoute'
 import NotFoundPage from './pages/NotFoundPage'
 import GuestRoute from './components/ui/shared/GuestRoute'
+import Navbar from './components/features/header/Navbar'
 
 
 const App = () => {
-  const { checkAuth, isCheckingAuth, authUser, logout } = useAuthStore();
+  const { checkAuth, isCheckingAuth
+    , authUser, logout
+
+  } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -52,7 +54,6 @@ const App = () => {
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route index element={<HomePage />} />
-          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
 

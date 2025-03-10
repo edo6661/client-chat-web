@@ -5,9 +5,10 @@ import ChatFooter from './ChatFooter';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const ChatBox = () => {
-  const { selectedUser, isMessagesLoading, messages, setSelectedUser, sendMessage } = useChatStore();
-  const { authUser } = useAuthStore()
+  const { selectedUser, isMessagesLoading, messages, sendMessage } = useChatStore();
+  const { authUser, onlineUsers } = useAuthStore()
 
+  const isUserOnline = (userId: string) => onlineUsers.includes(userId)
 
   return (
     <div className='flex-1 bg-neutral-100/50'>
@@ -25,12 +26,10 @@ const ChatBox = () => {
       {(!isMessagesLoading && selectedUser) && (
         <div className='flex flex-col h-full'>
           <ChatHeader
-            setSelectedUser={setSelectedUser}
             selectedUser={selectedUser}
+            isOnline={isUserOnline(selectedUser._id!)}
           />
-          <hr
-            className='border-b'
-          />
+
 
           <ChatBody
             messages={messages}

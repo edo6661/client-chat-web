@@ -1,5 +1,4 @@
 import { User } from '@/types/user.type'
-import React from 'react'
 interface SelectUserToChatProps {
   user: User;
   selectedUser: User | null;
@@ -11,8 +10,7 @@ const SelectUserToChat = (
 ) => {
   return (
     <div
-      key={user._id}
-      className={`p-4 rounded-l-md cursor-pointer ${selectedUser?._id === user._id ? 'bg-gray-200' : ''}`}
+      className={`py-2 px-4 rounded-l-md cursor-pointer ${selectedUser?._id === user._id ? 'bg-muted' : ''}`}
       onClick={() => setSelectedUser(user)}
     >
       <div className='flex items-center gap-4'>
