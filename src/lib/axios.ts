@@ -4,9 +4,9 @@ import {
   ApiSuccessResponse,
 } from "@/types/response.type";
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
-export const DELOYED_BASE_API_URL = import.meta.env.VITE_DEPLOYED_API_URL;
+export const DEPLOYED_BASE_API_URL = import.meta.env.VITE_DEPLOYED_API_URL;
 export const BASE_API_URL = import.meta.env.VITE_LOCAL_API_URL;
-export const BASE_URL = `${BASE_API_URL}/api/v1`;
+export const BASE_URL = `${DEPLOYED_BASE_API_URL}/api/v1`;
 
 class ApiClient {
   private instance: AxiosInstance;
