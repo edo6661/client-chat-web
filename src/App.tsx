@@ -10,12 +10,10 @@ import { Toaster } from "@/components/ui/sonner"
 import ProtectedRoute from './components/ui/shared/ProtectedRoute'
 import NotFoundPage from './pages/NotFoundPage'
 import GuestRoute from './components/ui/shared/GuestRoute'
-import Navbar from './components/features/header/Navbar'
 
 
 const App = () => {
   const { checkAuth, isCheckingAuth
-    , authUser, logout
 
   } = useAuthStore();
 
@@ -43,10 +41,7 @@ const App = () => {
         }}
 
       />
-      <Navbar
-        user={authUser}
-        logout={logout}
-      />
+
       <Routes>
         <Route element={<GuestRoute />}>
           <Route path='/register' element={<RegisterPage />} />

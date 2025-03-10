@@ -3,15 +3,22 @@ import ChatHeader from './ChatHeader';
 import ChatBody from './ChatBody';
 import ChatFooter from './ChatFooter';
 import { useAuthStore } from '@/store/useAuthStore';
+import useWindowDimensions from '@/hooks/useWindowDimensions';
 
-const ChatBox = () => {
-  const { selectedUser, isMessagesLoading, messages, sendMessage } = useChatStore();
+const ChatBox = (
+) => {
+  const { selectedUser, isMessagesLoading, messages, sendMessage, setSelectedUser } = useChatStore();
   const { authUser, onlineUsers } = useAuthStore()
+  const { width } = useWindowDimensions()
 
   const isUserOnline = (userId: string) => onlineUsers.includes(userId)
 
   return (
-    <div className='flex-1 bg-neutral-100/50'>
+    <div className={`flex-1 bg-secondary `}
+      style={{
+        display: width > 768 || selectedUser !== null ? 'block' : 'none',
+      }}
+    >
       {!selectedUser && (
         <div className='flex items-center justify-center h-full '>
           <p>
@@ -28,6 +35,7 @@ const ChatBox = () => {
           <ChatHeader
             selectedUser={selectedUser}
             isOnline={isUserOnline(selectedUser._id!)}
+            setSelectedUser={setSelectedUser}
           />
 
 

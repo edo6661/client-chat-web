@@ -123,7 +123,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-primary;
+    @apply bg-background text-foreground font-primary overflow-x-hidden;
   }
 }
 @layer utilities {

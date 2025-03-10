@@ -1,5 +1,5 @@
-import { LogOut, Settings } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { LogOut, MessageCircleIcon } from 'lucide-react'
+import { Link, useLocation } from 'react-router-dom'
 
 interface AsideProps {
   profilePic: string
@@ -9,6 +9,9 @@ interface AsideProps {
 const Aside = (
   { profilePic, logout }: AsideProps
 ) => {
+  const location = useLocation()
+  const path = location.pathname
+  const activeStyle = 'text-white bg-primary shadow-sm shadow-primary'
   return (
     <aside className='min-w-14 bg-secondary flex flex-col items-center py-6 gap-8'>
       <div className='flex flex-col gap-4 items-center justify-center'>
@@ -17,7 +20,7 @@ const Aside = (
           src='/logo.png'
         />
         <Link
-          className='block hover:bg-primary transition-colors duration-300 rounded-xl p-2 hover:text-white cursor-pointer hover:shadow-primary hover:shadow-sm'
+          className={`block hover:bg-primary transition-colors duration-300 rounded-xl p-2 hover:text-white cursor-pointer hover:shadow-primary hover:shadow-sm ${path === '/profile' && activeStyle}`}
           to="/profile"
         >
           <img
@@ -27,12 +30,15 @@ const Aside = (
           />
         </Link>
       </div>
-      <div className='flex-1'>
-        <img
-          src='./chat.png'
-          alt='chat'
-        />
+      <div className="flex-1">
+        <Link
+          className={`block hover:bg-primary transition-colors duration-300 rounded-xl p-2 hover:text-white cursor-pointer hover:shadow-primary hover:shadow-sm ${path === '/' && activeStyle}`}
+          to="/"
+        >
+          <MessageCircleIcon />
+        </Link>
       </div>
+
       <div
         className='flex flex-col gap-4 items-center justify-center'
       >
@@ -46,11 +52,7 @@ const Aside = (
         >
           <LogOut />
         </div>
-        <div
-          className='hover:bg-primary transition-colors duration-300 rounded-xl p-2 hover:text-white cursor-pointer hover:shadow-primary hover:shadow-sm'
-        >
-          <Settings />
-        </div>
+
       </div>
     </aside>
   )

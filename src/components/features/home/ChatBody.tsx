@@ -29,7 +29,7 @@ const ChatBody = (
 
 
   return (
-    <div className={`flex-1 py-4 px-3 space-y-4 ${isMessageEmpty ? '' : 'overflow-y-auto scrollbar-none'}`}>
+    <div className={`flex-1 py-4 space-y-4 ${isMessageEmpty ? '' : 'overflow-y-auto scrollbar-none'}`}>
       {messages.length === 0 ? (
         <div className="flex h-full items-center justify-center">
           <p className="text-neutral-500">Start a conversation with {selectedUser.fullname || 'this user'}</p>
@@ -51,7 +51,9 @@ const ChatBody = (
                 <div className="flex-shrink-0">
                   <Avatar className="h-8 w-8">
                     {selectedUser.profilePic ? (
-                      <img src={selectedUser.profilePic} alt={selectedUser.fullname || 'User'} />
+                      <img src={selectedUser.profilePic} alt={selectedUser.fullname || 'User'}
+                        className="object-cover w-full"
+                      />
                     ) : (
                       <div className="bg-blue-500 h-full w-full flex items-center justify-center text-white font-medium">
                         {(selectedUser.fullname || 'U').charAt(0).toUpperCase()}
