@@ -1,5 +1,4 @@
 import { ApiErrorResponse } from '@/types/response.type'
-import React from 'react'
 
 const ErrorResponseHandler = (
   { error }: { error: ApiErrorResponse | null }
